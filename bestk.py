@@ -1,3 +1,4 @@
+from pandas.core.frame import DataFrame
 import pyupbit
 import numpy as np
 
@@ -15,7 +16,16 @@ def get_ror(k=0.5):
     ror = df['ror'].cumprod()[-2]
     return ror
 
+def get_best_k():
+    df = DataFrame(columns=['k','ror'])
+    for k in np.arange(0.1, 1.0, 0.1):
+        ror = get_ror(k)
+        #print("%.1f %f" % (k, ror))
+        df = df.append({'k' : k, 'ror' : ror},ignore_index=True)
+    print(df)
+    maxk = df.iloc[df['ror'].idxmax()]['k']
+    print(maxk)
+    return maxk
 
-for k in np.arange(0.1, 1.0, 0.1):
-    ror = get_ror(k)
-    print("%.1f %f" % (k, ror))
+
+get_best_k()
